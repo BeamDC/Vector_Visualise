@@ -12,12 +12,14 @@ struct vector2D{
     void normalize();
     void add(vector2D v);
     void subtract(vector2D v);
+
     double dot(vector2D v);
+    double magnitude();
 };
 
 //2D member functions
 void vector2D::print(){
-    printf("[%lf, %lf]\n",x,y);
+    printf("[%f, %f]\n",x,y);
 }
 void vector2D::scale(double val){
     x*=val;
@@ -31,7 +33,7 @@ void vector2D::rotate(double angle){
     y=(cx*sin(angle)) + (cy*cos(angle));
 }
 void vector2D::normalize(){
-    double m = sqrt(x*x + y*y);
+    double m = magnitude();
     x/=m;
     y/=m;
 }
@@ -46,12 +48,16 @@ void vector2D::subtract(vector2D v){
 double vector2D::dot(vector2D v){
     return (x*v.x) + (y*v.y);
 }
+double vector2D::magnitude(){
+    return sqrt(x*x + y*y);
+}
 
 int main(){
     vector2D test;
     test.x=4;
-    test.y=-2;
+    test.y=2;
     test.print();
-    test.rotate(45);
+    cout<<test.magnitude()<<'\n';
+    test.normalize();
     test.print();
 }
