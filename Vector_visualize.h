@@ -51,5 +51,4 @@ vector2D scale(vector2D v, double val){
     return r;
 }
 
-
 #endif
