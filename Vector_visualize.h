@@ -3,11 +3,15 @@
 
 #include <cmath>
 #include <iostream>
-
 //Vector Types
 struct vector2D{
     double x;
     double y;
+};
+struct vector3D{
+    double x;
+    double y;
+    double z;
 };
 
 //2D functions
@@ -51,4 +55,41 @@ vector2D scale(vector2D v, double val){
     return r;
 }
 
-#endif
+//3D functions
+void print(vector3D v){
+    printf("[%f, %f, %f]\n",v.x,v.y,v.z);
+}
+
+double magnitude(vector3D v){
+    return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+}
+double dot(vector3D v, vector3D w){
+    return (v.x*w.x) + (v.y*w.y) + (v.z*w.z);
+}
+
+//3d rotation is evil
+
+vector3D add(vector3D v, vector3D w){
+    vector3D r{};
+    r.x = v.x + w.x;
+    r.y = v.y + w.y;
+    r.y = v.z + w.z;
+    return r;
+}
+vector3D normalize(vector3D v){
+    vector3D r{};
+    double m = magnitude(v);
+    r.x=v.x/m;
+    r.y=v.y/m;
+    r.z=v.z/m;
+    return r;
+}
+vector3D scale(vector3D v, double val){
+    vector3D r{};
+    r.x= v.x * val;
+    r.y= v.y * val;
+    r.z= v.z * val;
+    return r;
+}
+
+#endif //VECTOR_VISUALIZE_H
