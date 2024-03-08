@@ -54,6 +54,7 @@ vector2D scale(vector2D v, double val){
     r.y= v.y * val;
     return r;
 }
+//add function to return opposite vectors
 
 //3D functions
 void print(vector3D v){
