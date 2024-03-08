@@ -122,5 +122,12 @@ vector3D scale(vector3D v, double val){
     r.z = v.z * val;
     return r;
 }
+vector3D cross(vector3D v, vector3D w){
+    vector3D r;
+    r.x = (v.y * w.z) - (w.y * v.z);
+    r.y = (v.z * w.x) - (w.z * v.x);
+    r.z = (v.x * w.y) - (w.x * v.y);
+    return r;
+}
 
 #endif //VECTOR_VISUALIZE_H
