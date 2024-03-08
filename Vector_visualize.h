@@ -72,7 +72,6 @@ double dot(vector3D v, vector3D w){
     return (v.x*w.x) + (v.y*w.y) + (v.z*w.z);
 }
 
-//3d rotation is evil
 vector3D yaw(vector3D v, double yaw){ //rotate about the z-axis
     vector3D r{};
     yaw = yaw * M_PI / -180;
