@@ -1,8 +1,8 @@
 #ifndef VECTOR_VISUALIZE_H
 #define VECTOR_VISUALIZE_H
-
 #include <cmath>
 #include <iostream>
+
 //Vector Types
 struct vector2D{
     double x;
@@ -68,6 +68,9 @@ double dot(vector3D v, vector3D w){
 }
 
 //3d rotation is evil
+//use pitch and yaw for rotaions in 3D
+//Vector3D pitch()
+//Vector3D yaw()
 
 vector3D add(vector3D v, vector3D w){
     vector3D r{};
