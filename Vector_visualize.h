@@ -75,25 +75,22 @@ double dot(vector3D v, vector3D w){
 vector3D yaw(vector3D v, double yaw){ //rotate about the z-axis
     vector3D r{};
     yaw = yaw * M_PI / -180;
-    
     r.x = v.x * cos(yaw) - v.y * sin(yaw);
     r.y = v.x * sin(yaw) + v.y * sin(yaw);
     r.z = v.z;
     return r;
 }
-vector3D pitch(vector3D v, double pitch){
+vector3D pitch(vector3D v, double pitch){ //rotate about the y-axis
     vector3D r{};
     pitch = pitch * M_PI / -180;
-    
     r.x = v.x * cos(pitch) + v.z * sin(pitch);
     r.y = v.y;
     r.z = v.z * cos(pitch) - v.x * sin(pitch);
     return r;
 }
-vector3D roll(vector3D v, double roll){
+vector3D roll(vector3D v, double roll){ //rotate about the x-axis
     vector3D r{};
     roll = roll * M_PI / -180;
-    
     r.x = v.x;
     r.y = v.y * cos(roll) - v.z * sin(roll);
     r.z = v.y * sin(roll) + v.z * cos(roll);
