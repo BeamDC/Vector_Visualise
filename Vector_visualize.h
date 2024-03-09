@@ -104,6 +104,13 @@ vector3D add(vector3D v, vector3D w){
     r.y = v.z + w.z;
     return r;
 }
+vector3D opposite(vector3D v){
+    vector3D r{};
+    r.x = v.x * -1;
+    r.y = v.y * -1;
+    r.z = v.z * -1;
+    return r;
+}
 vector3D normalize(vector3D v){
     vector3D r{};
     double m = magnitude(v);
