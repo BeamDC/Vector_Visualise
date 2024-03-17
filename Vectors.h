@@ -1,5 +1,5 @@
-#ifndef VECTOR_VISUALIZE_H
-#define VECTOR_VISUALIZE_H
+#ifndef VECTORS_H
+#define VECTORS_H
 #include <cmath>
 #include <iostream>
 
@@ -7,6 +7,7 @@
 struct vector2D{
     double x;
     double y;
+    double z = 0.0;
 };
 struct vector3D{
     double x;
