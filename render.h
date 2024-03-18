@@ -3,7 +3,18 @@
 #include <cmath>
 #include <iostream>
 
-//Vector Types
+//Types
+struct point2D{
+    double x;
+    double y;
+    double z = 0.0;
+};
+struct point3D{
+    double x;
+    double y;
+    double z;
+};
+
 struct vector2D{
     double x;
     double y;
@@ -15,7 +26,23 @@ struct vector3D{
     double z;
 };
 
-//2D functions
+struct plane{
+    //intercepts 
+    double x_int;
+    double y_int;
+    double z_int;
+
+    //equation values
+    double a;
+    double b;
+    double c;
+    double d;
+
+    //normal vector
+    vector3D normal{};
+};
+
+/** 2D vector functions **/
 void print(vector2D v){
     printf("[%f, %f]\n",v.x,v.y);
 }
@@ -27,6 +54,12 @@ double dot(vector2D v, vector2D w){
     return (v.x*w.x) + (v.y*w.y);
 }
 
+vector2D construct(point2D a, point2D b){
+    vector2D r{};
+    r.x = b.x - a.x;
+    r.y = b.y - a.y;
+    return r;
+}
 vector2D rotate(vector2D v, double angle){ //rotate clockwise
     vector2D r{};
     angle = angle * M_PI / -180; // convert to degrees
@@ -61,7 +94,7 @@ vector2D opposite(vector2D v){
     return r;
 }
 
-//3D functions
+/** 3D vector functions **/
 void print(vector3D v){
     printf("[%f, %f, %f]\n",v.x,v.y,v.z);
 }
@@ -98,11 +131,18 @@ vector3D roll(vector3D v, double roll){ //rotate about the x-axis
     return r;
 }
 
+vector3D construct(point3D a, point3D b){
+    vector3D r{};
+    r.x = b.x - a.x;
+    r.y = b.y - a.y;
+    r.z = b.z - a.z;
+    return r;
+}
 vector3D add(vector3D v, vector3D w){
     vector3D r{};
     r.x = v.x + w.x;
     r.y = v.y + w.y;
-    r.y = v.z + w.z;
+    r.z = v.z + w.z;
     return r;
 }
 vector3D opposite(vector3D v){
@@ -132,6 +172,27 @@ vector3D cross(vector3D v, vector3D w){
     r.x = (v.y * w.z) - (w.y * v.z);
     r.y = (v.z * w.x) - (w.z * v.x);
     r.z = (v.x * w.y) - (w.x * v.y);
+    return r;
+}
+
+/** PLANES **/
+plane contstruct(point3D A, point3D B, point3D C){
+    plane r{};
+    vector3D AB = construct(A,B);
+    vector3D AC = construct(A,C);
+    
+    //normal vector
+    r.normal = normalize(cross(AB,AC));
+
+    //equation
+    r.a = r.normal.x;
+    r.b = r.normal.y;
+    r.c = r.normal.z;
+    r.d = r.a * A.x + r.b * A.y + r.c * A.z;
+    
+    //intercepts
+    
+    
     return r;
 }
 
