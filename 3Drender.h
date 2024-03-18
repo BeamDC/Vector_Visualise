@@ -1,5 +1,5 @@
-#ifndef 3DRENDER_H
-#define 3DRENDER_H
+#ifndef RENDER_H
+#define RENDER_H
 #include <cmath>
 #include <iostream>
 
@@ -135,4 +135,4 @@ vector3D cross(vector3D v, vector3D w){
     return r;
 }
 
-#endif //3DRENDER_H
+#endif //RENDER_H
