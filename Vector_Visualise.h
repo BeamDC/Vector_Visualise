@@ -1,36 +1,29 @@
-#ifndef RENDER_H
-#define RENDER_H
+#ifndef VECTOR_VISUALISE_H
+#define VECTOR_VISUALISE_H
 #include <cmath>
 #include <iostream>
 
 //Types
-struct point2D{
-    double x;
-    double y;
-    double z = 0.0;
-};
 struct point3D{
     double x;
     double y;
     double z;
-};
-
-struct vector2D{
-    double x;
-    double y;
-    double z = 0.0;
 };
 struct vector3D{
     double x;
     double y;
     double z;
 };
-
 struct plane{
+    //original points
+    point3D pointA;
+    point3D pointB;
+    point3D pointC;
+
     //intercepts 
-    double x_int;
-    double y_int;
-    double z_int;
+    point3D x_int{1,0,0};
+    point3D y_int{0,1,0};
+    point3D z_int{0,0,1};
 
     //equation values
     double a;
@@ -39,58 +32,45 @@ struct plane{
     double d;
 
     //normal vector
+    //(unit vector perpendicular to the plane)
     vector3D normal{};
 };
 
-/** 2D vector functions **/
-void print(vector2D v){
-    printf("[%f, %f]\n",v.x,v.y);
+/** 3D point functions **/
+void print(point3D p){
+    printf("(%f, %f, %f)",p.x,p.y,p.z);
 }
+point3D rotate(point3D p, double yaw, double pitch, double roll){
+    point3D r{};
 
-double magnitude(vector2D v){
-    return sqrt(v.x*v.x + v.y*v.y);
-}
-double dot(vector2D v, vector2D w){
-    return (v.x*w.x) + (v.y*w.y);
-}
+    double DegToRad = M_PI / -180;
+    yaw *= DegToRad;
+    pitch *= DegToRad;
+    roll *= DegToRad;
 
-vector2D construct(point2D a, point2D b){
-    vector2D r{};
-    r.x = b.x - a.x;
-    r.y = b.y - a.y;
-    return r;
-}
-vector2D rotate(vector2D v, double angle){ //rotate clockwise
-    vector2D r{};
-    angle = angle * M_PI / -180; // convert to degrees
+    double yawCos = cos(yaw);
+    double pitchCos = cos(pitch);
+    double rollCos = cos(roll);
+    double yawSin = sin(yaw);
+    double pitchSin = sin(pitch);
+    double rollSin = sin(roll);
 
-    r.x = (v.x*cos(angle)) - (v.y*sin(angle));
-    r.y = (v.x*sin(angle)) + (v.y*cos(angle));
-    return r;
-}
-vector2D add(vector2D v, vector2D w){
-    vector2D r{};
-    r.x = v.x + w.x;
-    r.y = v.y + w.y;
-    return r;
-}
-vector2D normalize(vector2D v){
-    vector2D r{};
-    double m = magnitude(v);
-    r.x = v.x/m;
-    r.y = v.y/m;
-    return r;
-}
-vector2D scale(vector2D v, double val){
-    vector2D r{};
-    r.x = v.x * val;
-    r.y = v.y * val;
-    return r;
-}
-vector2D opposite(vector2D v){
-    vector2D r{};
-    r.x = v.x * -1;
-    r.y = v.y * -1;
+    double xx = yawCos * pitchCos;
+    double xy = yawCos * pitchSin * rollSin - yawSin * rollCos;
+    double xz = yawCos * pitchSin * rollCos + yawSin * rollSin;
+
+    double yx = yawSin * pitchCos;
+    double yy = yawSin * pitchSin * rollSin + yawCos * rollCos;
+    double yz = yawSin * pitchSin * rollCos - yawCos * rollSin;
+
+    double zx = -pitchSin;
+    double zy = pitchCos * rollSin;
+    double zz = pitchCos * rollCos;
+
+    r.x = xx * p.x + xy * p.y + xz * p.z;
+    r.y = yx * p.x + yy * p.y + yz * p.z;
+    r.z = zx * p.x + zy * p.y + zz * p.z;
+    
     return r;
 }
 
@@ -106,28 +86,37 @@ double dot(vector3D v, vector3D w){
     return (v.x*w.x) + (v.y*w.y) + (v.z*w.z);
 }
 
-vector3D yaw(vector3D v, double yaw){ //rotate about the z-axis
+vector3D rotate(vector3D v, double yaw, double pitch, double roll){
     vector3D r{};
-    yaw = yaw * M_PI / -180;
-    r.x = v.x * cos(yaw) - v.y * sin(yaw);
-    r.y = v.x * sin(yaw) + v.y * sin(yaw);
-    r.z = v.z;
-    return r;
-}
-vector3D pitch(vector3D v, double pitch){ //rotate about the y-axis
-    vector3D r{};
-    pitch = pitch * M_PI / -180;
-    r.x = v.x * cos(pitch) + v.z * sin(pitch);
-    r.y = v.y;
-    r.z = v.z * cos(pitch) - v.x * sin(pitch);
-    return r;
-}
-vector3D roll(vector3D v, double roll){ //rotate about the x-axis
-    vector3D r{};
-    roll = roll * M_PI / -180;
-    r.x = v.x;
-    r.y = v.y * cos(roll) - v.z * sin(roll);
-    r.z = v.y * sin(roll) + v.z * cos(roll);
+
+    double DegToRad = M_PI / -180;
+    yaw *= DegToRad;
+    pitch *= DegToRad;
+    roll *= DegToRad;
+
+    double yawCos = cos(yaw);
+    double pitchCos = cos(pitch);
+    double rollCos = cos(roll);
+    double yawSin = sin(yaw);
+    double pitchSin = sin(pitch);
+    double rollSin = sin(roll);
+
+    double xx = yawCos * pitchCos;
+    double xy = yawCos * pitchSin * rollSin - yawSin * rollCos;
+    double xz = yawCos * pitchSin * rollCos + yawSin * rollSin;
+
+    double yx = yawSin * pitchCos;
+    double yy = yawSin * pitchSin * rollSin + yawCos * rollCos;
+    double yz = yawSin * pitchSin * rollCos - yawCos * rollSin;
+
+    double zx = -pitchSin;
+    double zy = pitchCos * rollSin;
+    double zz = pitchCos * rollCos;
+
+    r.x = xx * v.x + xy * v.y + xz * v.z;
+    r.y = yx * v.x + yy * v.y + yz * v.z;
+    r.z = zx * v.x + zy * v.y + zz * v.z;
+
     return r;
 }
 
@@ -176,24 +165,37 @@ vector3D cross(vector3D v, vector3D w){
 }
 
 /** PLANES **/
-plane contstruct(point3D A, point3D B, point3D C){
+void print(plane P){
+    print(P.normal);printf("\n");
+    print(P.pointA);printf("\n");
+    print(P.pointB);printf("\n");
+    print(P.pointC);printf("\n");
+}
+
+plane construct(point3D A, point3D B, point3D C){
     plane r{};
     vector3D AB = construct(A,B);
     vector3D AC = construct(A,C);
+
+    r.pointA = A;
+    r.pointB = B;
+    r.pointC = C;
     
     //normal vector
     r.normal = normalize(cross(AB,AC));
-
-    //equation
-    r.a = r.normal.x;
-    r.b = r.normal.y;
-    r.c = r.normal.z;
-    r.d = r.a * A.x + r.b * A.y + r.c * A.z;
-    
-    //intercepts
-    
     
     return r;
 }
 
-#endif //RENDER_H
+plane rotate(plane P, double yaw, double pitch, double roll){
+    plane r{};
+
+    r.normal = rotate(P.normal,yaw,pitch,roll);
+    r.pointA = rotate(P.pointA,yaw,pitch,roll);
+    r.pointB = rotate(P.pointB,yaw,pitch,roll);
+    r.pointC = rotate(P.pointC,yaw,pitch,roll);
+
+    return r;
+}
+
+#endif //VECTOR_VISUALISE_H
