@@ -1,6 +1,6 @@
 use std::default::Default;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 struct Point3D{
     x: f64,
     y: f64,
@@ -19,7 +19,7 @@ struct Plane3D{
     a: Point3D,
     b: Point3D,
     c: Point3D,
-    
+
     normal: Vec3D
 }
 
@@ -38,9 +38,9 @@ impl Default for Vec3D {
 
 impl Default for Plane3D {
     fn default() -> Self {
-        Self { 
-            a: Point3D{..Default::default()}, 
-            b: Point3D{..Default::default()}, 
+        Self {
+            a: Point3D{..Default::default()},
+            b: Point3D{..Default::default()},
             c: Point3D{..Default::default()},
             normal: Vec3D{..Default::default()}
         }
@@ -107,33 +107,31 @@ fn cross(v: Vec3D, w: Vec3D) -> Vec3D{
 
 fn rotate(v: Vec3D, yaw: f64, pitch: f64, roll: f64) -> Vec3D{
     let mut r = Vec3D{..Default::default()};
-    let yawCos: f64 = yaw.cos();
-    let yawSin: f64 = yaw.sin();
-    let pitchCos: f64 = pitch.cos();
-    let pitchSin: f64 = pitch.sin();
-    let rollCos: f64 = roll.cos();
-    let rollSin: f64 = roll.sin();
-    
-    let xx = yawCos * pitchCos;
-    let xy = yawCos * pitchSin * rollSin - yawSin * rollCos;
-    let xz = yawCos * pitchSin * rollCos + yawSin * rollSin;
-    
-    let yx = yawSin * pitchCos;
-    let yy = yawSin * pitchSin * rollSin + yawCos * rollCos;
-    let yz = yawSin * pitchSin * rollCos - yawCos * rollSin;
-    
-    let zx = -pitchSin;
-    let zy = pitchCos * rollSin;
-    let zz = pitchCos * rollCos;
-    
+    let yaw_cos: f64 = yaw.cos();
+    let yaw_sin: f64 = yaw.sin();
+    let pitch_cos: f64 = pitch.cos();
+    let pitch_sin: f64 = pitch.sin();
+    let roll_cos: f64 = roll.cos();
+    let roll_sin: f64 = roll.sin();
+
+    let xx = yaw_cos * pitch_cos;
+    let xy = yaw_cos * pitch_sin * roll_sin - yaw_sin * roll_cos;
+    let xz = yaw_cos * pitch_sin * roll_cos + yaw_sin * roll_sin;
+
+    let yx = yaw_sin * pitch_cos;
+    let yy = yaw_sin * pitch_sin * roll_sin + yaw_cos * roll_cos;
+    let yz = yaw_sin * pitch_sin * roll_cos - yaw_cos * roll_sin;
+
+    let zx = -pitch_sin;
+    let zy = pitch_cos * roll_sin;
+    let zz = pitch_cos * roll_cos;
+
     r.x = xx * v.x + xy * v.y + xz * v.z;
     r.y = yx * v.x + yy * v.y + yz * v.z;
     r.z = zx * v.x + zy * v.y + zz * v.z;
-    
+
     r
 }
-
-//rotate a vector
 
 /* Plane Functions */
 fn construct_plane(a: Point3D, b: Point3D, c: Point3D) -> Plane3D{
@@ -141,26 +139,38 @@ fn construct_plane(a: Point3D, b: Point3D, c: Point3D) -> Plane3D{
     r.a = a.clone();
     r.b = b.clone();
     r.c = c.clone();
-    let AB:Vec3D = construct_vec(a.clone(),b);
-    let AC:Vec3D = construct_vec(a,c);
-    r.normal = normalize(cross(AB,AC));
+    let ab:Vec3D = construct_vec(a.clone(), b);
+    let ac:Vec3D = construct_vec(a, c);
+    r.normal = normalize(cross(ab, ac));
     r
 }
 
 fn get_equation(p: Plane3D) -> [f64; 4]{
     let mut eqn: [f64; 4] = [0.0; 4];
-    
+
     eqn[0] = p.normal.x;
     eqn[1] = p.normal.y;
     eqn[2] = p.normal.z;
     eqn[3] = -p.normal.x * p.a.x + p.normal.y * p.a.y + p.normal.z * p.a.z;
-    
+
     eqn
 }
 
+fn get_intercepts(p: Plane3D) -> [Point3D; 3]{
+    let mut xyz_ints: [Point3D; 3] = [Point3D{..Default::default()}; 3];
+
+    let e = get_equation(p);
+    xyz_ints[0].x = -(e[3]/e[0]);
+    xyz_ints[1].x = -(e[3]/e[1]);
+    xyz_ints[2].x = -(e[3]/e[2]);
+
+    xyz_ints
+}
+
 fn main(){
-    let a = Point3D{x: 0.3,y: 7.8,z: 5.6};
-    let b = Point3D{x: 3.4,y: 4.1,z: 9.7};
-    let v: Vec3D = construct_vec(a,b);
-    println!("{:?}",v);
+    let a = Point3D{x: 1.0,y: 1.0,z: 1.0};
+    let b = Point3D{x: 2.0,y: 7.0,z: 2.0};
+    let c = Point3D{x: 2.0,y: 8.0,z: 7.0};
+    let p: Plane3D = construct_plane(a,b,c);
+    println!("{:#?}",p);
 }
