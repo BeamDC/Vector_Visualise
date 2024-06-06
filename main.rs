@@ -81,7 +81,7 @@ impl eframe::App for MainWindow {
                     ui.add(DragValue::new(&mut self.standard_vector.z).speed(0.5));
                 }),
                 Types::Plane => ui.vertical(|ui| {
-                    ui.horizontal(|ui|{
+                    ui.horizontal(|ui| {
                         ui.label("X1: ");
                         ui.add(DragValue::new(&mut self.standard_plane.a.x).speed(0.5));
                         ui.label("Y1: ");
@@ -89,7 +89,7 @@ impl eframe::App for MainWindow {
                         ui.label("Z1: ");
                         ui.add(DragValue::new(&mut self.standard_plane.a.z).speed(0.5));
                     });
-                    ui.horizontal(|ui|{
+                    ui.horizontal(|ui| {
                         ui.label("X2: ");
                         ui.add(DragValue::new(&mut self.standard_plane.b.x).speed(0.5));
                         ui.label("Y2: ");
@@ -97,7 +97,7 @@ impl eframe::App for MainWindow {
                         ui.label("Z2: ");
                         ui.add(DragValue::new(&mut self.standard_plane.b.z).speed(0.5));
                     });
-                    ui.horizontal(|ui|{
+                    ui.horizontal(|ui| {
                         ui.label("X3: ");
                         ui.add(DragValue::new(&mut self.standard_plane.c.x).speed(0.5));
                         ui.label("Y3: ");
@@ -109,20 +109,29 @@ impl eframe::App for MainWindow {
             };
 
             //button to construct the type
-            if ui.button("CONSTRUCT").clicked(){
+            if ui.button("CONSTRUCT").clicked() {
                 match self.add_type {
-                    Types::Point => self.points.push(self.standard_point),
-                    Types::Vector => self.vectors.push(self.standard_vector),
-                    Types::Plane => self.planes.push(self.standard_plane),
+                    Types::Point => {
+                        self.points.push(self.standard_point);
+                        println!("Points: {:#?}", self.points);
+                    }
+                    Types::Vector => {
+                        self.vectors.push(self.standard_vector);
+                        println!("Vectors: {:#?}", self.vectors);
+                    }
+                    Types::Plane => { // the normal of standard plane is useless rn
+                        self.planes.push(construct_plane(
+                            self.standard_plane.a,
+                            self.standard_plane.b,
+                            self.standard_plane.c)
+                        );
+                        println!("Planes: {:#?}", self.planes);
+                    }
                 }
-                println!("Points: {:#?}",self.points);
-                println!("Vectors: {:#?}",self.vectors);
-                println!("Planes: {:#?}",self.planes);
             }
         });
     }
 }
-
 
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
